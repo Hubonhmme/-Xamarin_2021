@@ -23,7 +23,7 @@
               <Label Text="{Binding Name}" FontSize="Medium" FontAttributes="Bold"/>
               <Label Text=":" FontSize="Medium" FontAttributes="Bold"/>
               <Label Text="{Binding Price}" FontSize="Medium" FontAttributes="Bold"/>
-              <Label Text="$" FontSize="Medium" FontAttributes="Bold"/>
+              <Label Text="€" FontSize="Medium" FontAttributes="Bold"/>
             </StackLayout>
             <Label Text="{Binding Description}" HorizontalOptions="Center"/>
           </StackLayout>
