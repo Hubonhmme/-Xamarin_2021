@@ -9,8 +9,10 @@ using PizzaIllico.Mobile.Dtos.Pizzas;
 using PizzaIllico.Mobile.Pages;
 using PizzaIllico.Mobile.Services;
 using Storm.Mvvm;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
+using Map = Xamarin.Forms.Maps.Map;
 
 namespace PizzaIllico.Mobile.ViewModels
 {
@@ -18,7 +20,6 @@ namespace PizzaIllico.Mobile.ViewModels
     {
         private ObservableCollection<ShopItem> _shops;
         public INavigation Navigation { get;}
-        public ICommand SelectedCommand { get; }
         public ObservableCollection<ShopItem> Shops
         {
             get => _shops;
@@ -32,16 +33,10 @@ namespace PizzaIllico.Mobile.ViewModels
             get => _map;
             set => SetProperty(ref _map, value); 
         }
-        public MapViewModel(INavigation navigation)
+        public MapViewModel(Position startingposition,INavigation navigation)
         {
             Navigation = navigation;
-            SelectedCommand = new Command<ShopItem>(SelectedAction);
-            Map = new Map {MapType = 0, IsShowingUser = true};
-        }
-
-        private async void SelectedAction(ShopItem obj)
-        {
-            await Navigation.PushAsync(new PizzaListPage(obj.Id));
+            Map = new Map(MapSpan.FromCenterAndRadius(startingposition, Distance.FromKilometers(50))) {MapType = 0, IsShowingUser = true};
         }
 
         public override async Task OnResume()
@@ -63,6 +58,7 @@ namespace PizzaIllico.Mobile.ViewModels
 
         private void updateMap()
         {
+            
             Map.Pins.Clear();
             foreach (ShopItem shop in Shops)
             {
@@ -71,7 +67,12 @@ namespace PizzaIllico.Mobile.ViewModels
                     Label = shop.Name,
                     Address = shop.Address,
                     Position = new Position(shop.Latitude,shop.Longitude),
-                    Type = PinType.Place
+                    Type = PinType.Place,
+                    Command = new Command(
+                    async () =>
+                    {
+                        await Navigation.PushAsync(new PizzaListPage(shop.Id));
+                    })
                 });
             }
         }

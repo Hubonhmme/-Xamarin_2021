@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using PizzaIllico.Mobile.Controls;
+using PizzaIllico.Mobile.ViewModels;
+using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Maps;
 using Xamarin.Forms.Xaml;
 
 namespace PizzaIllico.Mobile.Pages
@@ -12,14 +15,12 @@ namespace PizzaIllico.Mobile.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class HomePage : ContentPage
     {
-        private Boolean isConnected;
         private StackLayout layoutNotConnected;
         private StackLayout layoutConnected;
         public HomePage()
         {
             BindingContext = new ViewModels.HomeViewModel();
             InitializeComponent();
-            isConnected = false;
             layoutNotConnected = this.FindByName("NotConnected") as StackLayout;
             layoutConnected = this.FindByName("Connected") as StackLayout;
             actualiseAffichage();
@@ -34,7 +35,8 @@ namespace PizzaIllico.Mobile.Pages
         }
         async void clickMap(object sender, EventArgs eventArgs)
         {
-            await Navigation.PushAsync(new MapPage());
+            var location = await Geolocation.GetLocationAsync();
+            await Navigation.PushAsync(new MapPage(new Position(location.Latitude,location.Longitude)));
         }
         async void clickPanier(object sender, EventArgs eventArgs)
         {
@@ -52,15 +54,12 @@ namespace PizzaIllico.Mobile.Pages
         {
             await Navigation.PushAsync(new InscriptionPage());
         }
-        private void clickSwitch(object sender, EventArgs e)
+
+        public  void actualiseAffichage()
         {
-            this.isConnected=!(this.isConnected);
-            actualiseAffichage();
-        }
-        private void actualiseAffichage()
-        {
-            this.layoutConnected.IsVisible=this.isConnected;
-            this.layoutNotConnected.IsVisible=!(this.isConnected);
+            this.layoutConnected.IsVisible = User.Instance.is_connected;
+            this.layoutNotConnected.IsVisible = !User.Instance.is_connected;
         }
     }
+    
 }
