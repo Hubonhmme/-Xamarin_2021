@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:PizzaIllico.Mobile.ViewModels;assembly=PizzaIllico.Mobile"
+             xmlns:extensions="clr-namespace:PizzaIllico.Mobile.Extensions;assembly=PizzaIllico.Mobile"
+             xmlns:pizzas="clr-namespace:PizzaIllico.Mobile.Dtos.Pizzas;assembly=PizzaIllico.Mobile"
+             x:Class="PizzaIllico.Mobile.Pages.PizzaListPage"
+             x:DataType="viewModels:PizzaListViewModel"
+             Title="Pizzas">
+  <ListView ItemsSource="{Binding Pizzas}"
+            SelectionMode="None"
+             Margin="5"
+             RowHeight="70">
+    <ListView.Behaviors>
+      <extensions:ListViewItemTappedBehavior Command="{Binding SelectedCommand}"/>
+    </ListView.Behaviors>
+    <ListView.ItemTemplate>
+      <DataTemplate>
+        <ViewCell x:DataType="pizzas:PizzaItem">
+          <StackLayout Orientation="Vertical" VerticalOptions="Center">
+            <Label Text="Pizza victime de son succès :'(" IsVisible="{Binding OutOfStock}" />
+              <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+              <Label Text="{Binding Name}" FontSize="Medium" FontAttributes="Bold"/>
+              <Label Text=":" FontSize="Medium" FontAttributes="Bold"/>
+              <Label Text="{Binding Price}" FontSize="Medium" FontAttributes="Bold"/>
+              <Label Text="$" FontSize="Medium" FontAttributes="Bold"/>
+            </StackLayout>
+            <Label Text="{Binding Description}" HorizontalOptions="Center"/>
+          </StackLayout>
+        </ViewCell>
+      </DataTemplate>
+    </ListView.ItemTemplate>
+  </ListView>
+</ContentPage>
